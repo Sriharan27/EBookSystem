@@ -1,0 +1,130 @@
+﻿@model dynamic
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>
+        .grey-header {
+            color: #888;
+            font-weight: bold;
+        }
+
+        .bigger-bolder {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .double-border {
+            border-top: 6px double #555;
+        }
+
+        .left-border {
+            padding-left: 10px;
+            border-left: 1px solid #ddd;
+        }
+
+        .address {
+            line-height: .9;
+        }
+    </style>
+</head>
+<body>
+    <div style="padding-top: 5px;">
+        <div class="row">
+            <div class="col-xs-7" style="margin-bottom:20px">
+                <h1>Invoice</h1>
+            </div>
+            <div class="col-xs-5">
+                <div class="row">
+                    <div class="col-xs-4" style="margin-right: -20px;">
+                        <div class="text-right grey-header">From</div>
+                    </div>
+                    <div class="col-xs-8">
+                        <div class="left-border address">
+                            <p><strong>EBooks</strong></p>
+                            <p>38/A D.S.Senanayake</p>
+                            <p>Mawatha Borella</p>
+                            <p>Colombo 08</p>
+                            <p>0112 678 181</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="padding-top: 50px; padding-bottom:5px">
+
+            <div class="col-xs-7">
+                <div class="row">
+                    <div class="col-xs-4" style="margin-right: -50px;">
+                        <div class="grey-header">
+                            <p>Invoice #</p>
+                            <p>Order Date</p>
+                            <p>Issued Date</p>
+                        </div>
+                    </div>
+                    <div class="col-xs-8">
+                        <div class="left-border">
+                            <p>@Model.InvoiceId</p>
+                            <p>@Model.OrderDate.ToString("MMMM d, yyyy")</p>
+                            <p>@DateTime.Now.ToString("MMMM d, yyyy")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-5">
+                <div class="row">
+                    <div class="col-xs-4" style="margin-right: -20px;">
+                        <div class="text-right grey-header">To</div>
+                    </div>
+                    <div class="col-xs-8">
+                        <div class="left-border address">
+                            <p><strong>@Model.UserName</strong></p>
+                            <p>@Model.UserEmail</p>
+                            <p>&nbsp;</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row" style="padding-top: 50px;">
+            <div class="col-xs-12">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th>Units</th>
+                            <th>Unit Price</th>
+                            <th>Total Price</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Items)
+                        {
+                            <tr>
+                                <td>@item.Description</td>
+                                <td>@item.Units</td>
+                                <td>Rs @item.PricePerUnit.ToString("N2")</td>
+                                <td>Rs @item.TotalCost.ToString("N2")</td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="double-border info">
+                            <td colspan="3" class="text-right bigger-bolder">Net Total</td>
+                            <td class="bigger-bolder">Rs @Model.NetTotal.ToString("N2")</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

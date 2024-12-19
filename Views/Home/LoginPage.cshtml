@@ -1,0 +1,75 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<head>
+    <link rel="stylesheet" href="~/css/LoginSignUpPages.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row" style="padding-top: 100px;">
+            <div class="col-md-6" style="padding:40px">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-5">
+                            <img src="~/images/ebook.png" alt="Company Logo" style="max-width: 150px;">
+                        </div>
+                        <h2 class="title-2 mb-4">Login</h2>
+                        <hr />
+                        <form method="post" asp-action="LoginPage">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Username</label>
+                                <input name="username" class="form-control" id="exampleInputEmail1" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" name="password" class="form-control" id="exampleInputPassword1" required>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-outline">Sign in</button>
+                                <button type="button" class="btn btn-danger" onclick="history.back()">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="bg-image" style="display: flex; justify-content: center; align-items: center;">
+                    <img src="~/images/loginbg.png" alt="Company Logo" style="width: 100%;">
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <a class="role-auth" asp-controller="Home" asp-action="SignUpPage">Create an Account?</a>
+                    </div>
+                    <div class="col-md-6 ">
+                        <a class="role-auth" asp-controller="Home" asp-action="ForgotPasswordPage">Forgot Password?</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'success',
+                    title: 'Success!',
+                    text: '@TempData["SuccessMessage"]',
+                    confirmButtonText: 'OK'
+                                     });
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'error',
+                    title: 'Error!',
+                    text: '@TempData["ErrorMessage"]',
+                    confirmButtonText: 'OK'
+                                     });
+            </text>
+        }
+    </script>
+</body>

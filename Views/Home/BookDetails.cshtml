@@ -1,0 +1,204 @@
+﻿@model EBookSystem.Models.Books
+
+@{
+    Layout = "~/Views/Home/HomeLayout.cshtml";
+}
+
+<section class="sec-product-detail bg0" style="padding: 40px 0; background-color: #f9f9f9;">
+    <div class="container">
+        <div class="row align-items-stretch">
+            <div class="col-md-6" style="padding: 20px;">
+                <div id="itemImageContainer"
+                     style="padding: 0; height: 100%; display: flex; justify-content: center; align-items: center; overflow: hidden;">
+                    @if (Model.BookImage != null)
+                    {
+                        var base64Image = Convert.ToBase64String(Model.BookImage);
+                        <img src="data:image/jpeg;base64,@base64Image" alt="@Model.Title"
+                             style="height: 100%; width: auto; object-fit: cover; border-radius: 8px; border: 1px solid #ddd;" />
+                    }
+                    else
+                    {
+                        <p style="font-size: 16px; color: #999;">No Image Available</p>
+                    }
+                </div>
+            </div>
+
+
+            <div class="col-md-6 col-lg-5 d-flex flex-column justify-content-between" style="padding: 20px;">
+                <div>
+                    <h4 class="mtext-105 cl2" style="font-size: 28px; font-weight: 600; margin-bottom: 15px; color: #333;">
+                        @Model.Title
+                    </h4>
+
+                    <span class="mtext-106 cl2" style="font-size: 24px; color: #ff5722; font-weight: bold;">
+                        LKR @Model.Price
+                    </span>
+
+                    <p class="stext-102 cl3 p-t-23" style="font-size: 16px; line-height: 1.6; color: #555; margin-top: 15px;">
+                        @Model.Description
+                    </p>
+
+                    <p class="stext-102 cl3 p-t-23" style="font-size: 16px; color: #666; margin-top: 10px;">
+                        <strong>Author:</strong> @Model.Author
+                    </p>
+
+                    <p class="stext-102 cl3 p-t-23" style="font-size: 16px; color: #666; margin-top: 10px;">
+                        <strong>Genre:</strong> @Model.Genre?.Name
+                    </p>
+                </div>
+                <div>
+                    <div class="p-t-33" style="margin-top: 30px;">
+                        <div class="size-250" style="display: flex; flex-direction: column; align-items: flex-start;">
+                            <div class="wrap-num-product flex-w m-tb-10" style="display: flex; align-items: center; margin-bottom: 20px;">
+                                <button id="btnMinus" type="button" class="btn-num-product cl8 hov-btn3 trans-04 flex-c-m" style="border: 1px solid #ddd; background-color: #fff; padding: 5px 10px; cursor: pointer; border-radius: 4px;">
+                                    <i class="fa fa-minus" style="font-size: 16px; color: #333;"></i>
+                                </button>
+                                <input id="numProduct" class="mtext-104 cl3 txt-center num-product" type="number" name="num-product" value="1" min="1" max="@Model.Quantity" style="width: 60px; text-align: center; margin: 0 10px; border: 1px solid #ddd; border-radius: 4px; padding: 5px;">
+                                <button id="btnPlus" type="button" class="btn-num-product cl8 hov-btn3 trans-04 flex-c-m" style="border: 1px solid #ddd; background-color: #fff; padding: 5px 10px; cursor: pointer; border-radius: 4px;">
+                                    <i class="fa fa-plus" style="font-size: 16px; color: #333;"></i>
+                                </button>
+                            </div>
+
+                            <div style="display: flex; gap: 15px;">
+                                <button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 add-to-cart" style="background-color: #ff5722; color: #fff; border: none; padding: 10px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s;">
+                                    Add to Cart
+                                </button>
+
+                                <button class="flex-c-m stext-101 cl0 size-101 bg-primary bor1 hov-btn1 p-lr-15 trans-04 leave-feedback"
+                                        data-user-id="@((Context.Session.GetInt32("UserID") ?? 0))"
+                                        style="background-color: #007bff; color: #fff; border: none; padding: 10px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s;">
+                                    Leave a Feedback
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Feedback Modal -->
+<div id="feedbackModal" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Leave Feedback</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-action="AddFeedback" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="Message">Your Feedback:</label>
+                        <textarea id="Message" name="Message" class="form-control" rows="4" required></textarea>
+                    </div>
+                    <input type="hidden" name="UserId" value="@((Context.Session.GetInt32("UserID") ?? 0))" />
+                    <input type="hidden" name="BookId" value="@Model.BookId" />
+                    <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function addToCart(itemId, quantity) {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            for (let i = 0; i < quantity; i++) {
+                cart.push(itemId);
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartCount();
+            new Swal({
+                title: "Item Added",
+                text: "The book has been added to your cart!",
+                icon: "success",
+                button: "OK"
+            });
+        }
+
+        function updateCartCount() {
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const cartCountElement = document.querySelector('.icon-header-noti');
+            if (cartCountElement) {
+                cartCountElement.setAttribute('data-notify', cart.length);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const btnPlus = document.getElementById("btnPlus");
+            const btnMinus = document.getElementById("btnMinus");
+            const numProduct = document.getElementById("numProduct");
+            const addToCartButton = document.querySelector(".add-to-cart");
+
+            const leaveFeedbackButton = document.querySelector(".leave-feedback");
+            const feedbackModal = document.getElementById("feedbackModal");
+            const feedbackForm = document.getElementById("feedbackForm");
+
+            leaveFeedbackButton.addEventListener("click", function () {
+                const userId = leaveFeedbackButton.getAttribute("data-user-id"); 
+
+                if (!userId || userId === "0") {
+                    window.location.href = '/Home/LoginPage';
+                } else {
+                    $(feedbackModal).modal('show');
+                }
+            });
+
+            btnPlus.addEventListener("click", function () {
+                let currentValue = parseInt(numProduct.value);
+                const maxValue = parseInt(numProduct.max);
+                if (currentValue < maxValue) {
+                    numProduct.value = currentValue + 1;
+                }
+            });
+
+            btnMinus.addEventListener("click", function () {
+                let currentValue = parseInt(numProduct.value);
+                const minValue = parseInt(numProduct.min);
+                if (currentValue > minValue) {
+                    numProduct.value = currentValue - 1;
+                }
+            });
+
+            addToCartButton.addEventListener("click", function () {
+                const quantity = parseInt(numProduct.value) || 1;
+                const bookId = @Model.BookId;
+                addToCart(bookId, quantity);
+            });
+
+            updateCartCount();
+        });
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'success',
+                    title: 'Success!',
+                    text: '@TempData["SuccessMessage"]',
+                    confirmButtonText: 'OK'
+                                                 });
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                    Swal.fire({
+                        icon: 'error',
+                    title: 'Error!',
+                    text: '@TempData["ErrorMessage"]',
+                    confirmButtonText: 'OK'
+                                                 });
+            </text>
+        }
+    </script>
+}
+
+

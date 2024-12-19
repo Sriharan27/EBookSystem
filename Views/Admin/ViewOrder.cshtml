@@ -1,0 +1,51 @@
+﻿@model List<OrderLineItems>
+@{
+    Layout = "~/Views/Admin/AdminLayout.cshtml";
+}
+<h2 class="text-center mb-5">Order Line Items for Sale ID @Model.FirstOrDefault()?.OrderId</h2>
+
+<table id="tableCss" class="table">
+    <thead>
+        <tr>
+            <th>Line Item ID</th>
+            <th>Book Cover</th>
+            <th>Title</th>
+            <th>Quantity</th>
+            <th>Total Price</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var lineItem in Model)
+        {
+            <tr>
+                <td>@lineItem.OrderLineItemId</td>
+                <td>
+                    @if (lineItem.Book.BookImage != null && lineItem.Book.BookImage.Length > 0)
+                    {
+                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(lineItem.Book.BookImage)"
+                             alt="Book Image"
+                             style="width: 60px; height: auto; border-radius: 5px;" />
+                    }
+                    else
+                    {
+                        <span>No Image</span>
+                    }
+                </td>
+                <td>@lineItem.Book?.Title</td>
+                <td>@lineItem.Quantity</td>
+                <td>LKR @lineItem.TotalPrice.ToString("0.00")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<script>
+    $(document).ready(function () {
+        $('#tableCss').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true
+        });
+    });
+</script>

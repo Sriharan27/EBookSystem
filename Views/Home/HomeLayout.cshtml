@@ -1,0 +1,292 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] EBook</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css">
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+    <!-- Select2 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.28/dist/sweetalert2.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/responsive.css" />
+
+</head>
+<body style="margin:0px">
+
+    <!-- header section strats -->
+    <header class="header_section">
+        <div class="container-fluid">
+            <nav class="navbar navbar-expand-lg custom_nav-container">
+                <a class="navbar-brand" href="index.html">
+                    <span>EBook</span>
+                </a>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav">
+                        <li class="nav-item active">
+                            <a class="nav-link pl-lg-0" href="@Url.Action("Index", "Home")">Home <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="about.html"> About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="categories.html">Categories</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="blog.html"> Blog </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="contact.html">Contact Us</a>
+                        </li>
+                    </ul>
+
+                    <form class="search_form" method="GET" action="/Home/SearchBooks">
+                        <input type="text" name="query" class="form-control" placeholder="Search here...">
+                        <button class="" type="submit">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                        </button>
+                    </form>
+
+                    <!-- Cart Icon with Notification Badge -->
+                    <div class="icon-header-item cl2 hov-cl1 trans-04 js-show-cart"
+                         style="position: relative; display: inline-block; font-size: 26px; color: white; padding: 10px 25px;"
+                         onmouseover="this.style.color='#717FE0';" onmouseout="this.style.color='white';" onclick="window.location.href = '/Home/CartPage';">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="icon-header-noti"
+                              style="position: absolute; top: 0; right: -2px; background-color: #ff4d4d; color: white; font-size: 12px;
+                                    padding: 3px 6px; border-radius: 50%; font-weight: bold; display: none;">0</span>
+                    </div>
+
+                    <!-- Account Icon and Dropdown -->
+                    <div class="icon-header-item cl2 hov-cl1 trans-04 dropdown">
+                        <a class="nav-link dropdown-toggle js-show-login" href="#" id="loginDropdown" role="button"
+                           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                           style="font-size: 26px; color: white;"
+                           onmouseover="this.style.color='#717FE0';"
+                           onmouseout="this.style.color='white';">
+                            <i class="fas fa-user"></i>
+                        </a>
+
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="loginDropdown"
+                             style="border-radius: 0.5rem; background-color: #fff; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); padding: 0.5rem;">
+                            @if (Context.Session.GetInt32("UserID") != null)
+                            {
+                                <a class="dropdown-item"
+                                   href="@Url.Action("ManageOrders", "Home")"
+                                   style="border-radius: 0.25rem; padding: 0.5rem 1rem; color: #333; display: block; text-decoration: none;"
+                                   onmouseover="this.style.backgroundColor='#717FE0'; this.style.color='white';"
+                                   onmouseout="this.style.backgroundColor=''; this.style.color='#333';">
+                                    View/Delete Orders
+                                </a>
+
+                                <hr />
+
+                                <a class="dropdown-item"
+                                   href="@Url.Action("Logout", "Home")"
+                                   style="border-radius: 0.25rem; padding: 0.5rem 1rem; color: #333; display: block; text-decoration: none;"
+                                   onmouseover="this.style.backgroundColor='#717FE0'; this.style.color='white';"
+                                   onmouseout="this.style.backgroundColor=''; this.style.color='#333';">Logout</a>
+                            }
+                            else
+                            {
+                                <a class="dropdown-item" href="javascript:void(0);"
+                                   onclick="window.location.href = '/Home/LoginPage';"
+                                   style="border-radius: 0.25rem; padding: 0.5rem 1rem; color: #333; display: block; text-decoration: none;"
+                                   onmouseover="this.style.backgroundColor='#717FE0'; this.style.color='white';"
+                                   onmouseout="this.style.backgroundColor=''; this.style.color='#333';">Login</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="">
+        <main role="main" class="pb-3 m-0 p-0">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- info section -->
+
+    <section class="info_section layout_padding2">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-lg-3 info-col">
+                    <div class="info_detail">
+                        <h4>
+                            About Us
+                        </h4>
+                        <p>
+                            At EBook, we are passionate about connecting readers with the stories, knowledge, and inspiration they seek. Offering a wide range of books across genres, we aim to make reading accessible, convenient, and enjoyable for everyone. Whether you're a casual reader or a book enthusiast, EBook is your go-to platform for exploring the world through words.
+                        </p>
+                        <div class="info_social">
+                            <a href="">
+                                <i class="fa fa-facebook" aria-hidden="true"></i>
+                            </a>
+                            <a href="">
+                                <i class="fa fa-twitter" aria-hidden="true"></i>
+                            </a>
+                            <a href="">
+                                <i class="fa fa-linkedin" aria-hidden="true"></i>
+                            </a>
+                            <a href="">
+                                <i class="fa fa-instagram" aria-hidden="true"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 info-col">
+                    <div class="info_contact">
+                        <h4>
+                            Address
+                        </h4>
+                        <div class="contact_link_box">
+                            <a href="">
+                                <i class="fa fa-map-marker" aria-hidden="true"></i>
+                                <span>
+                                    38/A D S Senanayke Mawatha Borella Colombo 08
+                                </span>
+                            </a>
+                            <a href="">
+                                <i class="fa fa-phone" aria-hidden="true"></i>
+                                <span>
+                                    Call +01 1234567890
+                                </span>
+                            </a>
+                            <a href="">
+                                <i class="fa fa-envelope" aria-hidden="true"></i>
+                                <span>
+                                    Ebook@gmail.com
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 info-col">
+                    <div class="info_contact">
+                        <h4>
+                            Newsletter
+                        </h4>
+                        <form action="#">
+                            <input type="text" placeholder="Enter email" />
+                            <button type="submit">
+                                Subscribe
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 info-col">
+                    <div class="map_container">
+                        <div class="map">
+                            <div id="googleMap"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- end info section -->
+    <!-- footer section -->
+    <footer class="footer_section">
+        <div class="container">
+            <p>
+                &copy; <span id="displayYear"></span> All Rights Reserved By
+                <a href="#">EBook Pvt Ltd</a>
+            </p>
+        </div>
+    </footer>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- DataTables -->
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.28/dist/sweetalert2.min.js"></script>
+
+    <!-- Select2 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script>
+        // Example: DataTable initialization check
+        console.log("jQuery loaded:", typeof $);
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <script>
+        function updateCartCount() {
+            // Retrieve cart items from localStorage, default to an empty array
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            // Select the cart count element
+            const cartCountElement = document.querySelector('.icon-header-noti');
+
+            if (cartCountElement) {
+                // Update the badge content with the number of items in the cart
+                cartCountElement.textContent = cart.length;
+
+                // Update the 'data-notify' attribute for semantic use
+                cartCountElement.setAttribute('data-notify', cart.length);
+
+                // Show or hide the badge based on the cart count
+                cartCountElement.style.display = cart.length > 0 ? 'inline-block' : 'none';
+            }
+        }
+
+        // Example: Call this function whenever the cart updates
+        updateCartCount();
+    </script>
+
+    <script async
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=initMap">
+    </script>
+    <script>
+        // Initialize the Google Map
+        function initMap() {
+            const mapOptions = {
+                center: { lat: 37.7749, lng: -122.4194 }, // Example coordinates for San Francisco
+                zoom: 10,
+            };
+
+            const map = new google.maps.Map(document.getElementById("googleMap"), mapOptions);
+        }
+    </script>
+
+</body>
+</html>

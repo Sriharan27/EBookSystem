@@ -1,0 +1,70 @@
+﻿@model List<OrderLineItems>
+@{
+    Layout = "~/Views/Home/HomeLayout.cshtml";
+}
+<h2 class="text-center mb-5">Order Line Items for Order ID @Model.FirstOrDefault()?.OrderId</h2>
+
+<div class="table-responsive d-none d-md-block">
+    <table id="tableCss" class="table"
+           style="border: 1px solid #ddd; border-collapse: collapse;">
+        <thead style="border-bottom: 2px solid #ddd;">
+            <tr>
+                <th style="border: 1px solid #ddd; padding: 10px;">Line Item ID</th>
+                <th style="border: 1px solid #ddd; padding: 10px;">Book Cover</th>
+                <th style="border: 1px solid #ddd; padding: 10px;">Title</th>
+                <th style="border: 1px solid #ddd; padding: 10px;">Quantity</th>
+                <th style="border: 1px solid #ddd; padding: 10px;">Total Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var lineItem in Model)
+            {
+                <tr>
+                    <td style="border: 1px solid #ddd; padding: 10px;">@lineItem.OrderLineItemId</td>
+                    <td style="border: 1px solid #ddd; padding: 10px;">
+                        @if (lineItem.Book.BookImage != null && lineItem.Book.BookImage.Length > 0)
+                        {
+                            <img src="data:image/jpeg;base64,@Convert.ToBase64String(lineItem.Book.BookImage)"
+                                 alt="Book Image"
+                                 style="width: 60px; height: auto; border-radius: 5px;" />
+                        }
+                        else
+                        {
+                            <span>No Image</span>
+                        }
+                    </td>
+                    <td style="border: 1px solid #ddd; padding: 10px;">@lineItem.Book?.Title</td>
+                    <td style="border: 1px solid #ddd; padding: 10px;">@lineItem.Quantity</td>
+                    <td style="border: 1px solid #ddd; padding: 10px;">LKR @lineItem.TotalPrice.ToString("0.00")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<!-- Initialize DataTables -->
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var table = $('#tableCss');
+            if (table.length) {
+                table.DataTable({
+                    paging: true,
+                    searching: true,
+                    ordering: true,
+                    info: true
+                });
+            } else {
+                console.error("Table element not found");
+            }
+
+            $('#tableCss_wrapper').css({
+                'margin': '0 auto',
+                'margin-left': '50px',
+                'margin-right': '50px'
+            });
+        });
+
+    </script>
+}

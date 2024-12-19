@@ -1,0 +1,145 @@
+﻿@model List<Feedback>
+@{
+    Layout = "~/Views/Admin/AdminLayout.cshtml";
+    var OrdersCount = ViewData["OrdersCount"] ?? 0;
+    var FeedbacksCount = ViewData["FeedbacksCount"] ?? 0;
+    var CustomersCount = ViewData["CustomersCount"] ?? 0;
+    var BooksCount = ViewData["BooksCount"] ?? 0;
+}
+<div class="container-fluid" style="padding: 20px; background-color: #f9f9f9;">
+    <div class="row" >
+        <!-- Card 1 -->
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <div class="info-box" style="background-color: #343a40; color: #fff; border-radius: 10px; display: flex; align-items: center; padding: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <span class="info-box-icon" style="background-color: #17a2b8; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                    <img src="~/images/Orders.png" alt="icon" style="width: 40px; height: 40px;">
+                </span>
+                <div class="info-box-content" style="margin-left: 15px;">
+                    <span style="font-size: 16px; font-weight: bold;">Orders</span><br />
+                    <span style="font-size: 20px; font-weight: bold;">@OrdersCount</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <div class="info-box" style="background-color: #343a40; color: #fff; border-radius: 10px; display: flex; align-items: center; padding: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <span class="info-box-icon" style="background-color: #dc3545; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                    <img src="~/images/Customer.png" alt="icon" style="width: 40px; height: 40px;">
+                </span>
+                <div class="info-box-content" style="margin-left: 15px;">
+                    <span style="font-size: 16px; font-weight: bold;">Customers</span><br />
+                    <span style="font-size: 20px; font-weight: bold;">@CustomersCount</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <div class="info-box" style="background-color: #343a40; color: #fff; border-radius: 10px; display: flex; align-items: center; padding: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <span class="info-box-icon" style="background-color: #ffc107; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                    <img src="~/images/Books.png" alt="icon" style="width: 40px; height: 40px;">
+                </span>
+                <div class="info-box-content" style="margin-left: 15px;">
+                    <span style="font-size: 16px; font-weight: bold;">Books</span><br />
+                    <span style="font-size: 20px; font-weight: bold;">@BooksCount</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="col-12 col-sm-6 col-md-3 mb-3">
+            <div class="info-box" style="background-color: #343a40; color: #fff; border-radius: 10px; display: flex; align-items: center; padding: 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <span class="info-box-icon" style="background-color: #28a745; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center;">
+                    <img src="~/images/Feedback.png" alt="icon" style="width: 40px; height: 40px;">
+                </span>
+                <div class="info-box-content" style="margin-left: 15px;">
+                    <span style="font-size: 16px; font-weight: bold;">Feedbacks</span><br />
+                    <span style="font-size: 20px; font-weight: bold;">@FeedbacksCount</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr style="margin: 20px 0;">
+
+<div class="table-responsive">
+    <h3 style="margin-bottom: 20px;">Recent Feedback</h3>
+    <table id="tableCss" class="table table-hover table-striped" style="border: 1px solid #ddd; font-size: 14px;">
+        <thead style="background-color: #343a40; color: #fff;">
+            <tr>
+                <th>Feedback ID</th>
+                <th>Book</th>
+                <th>Title</th>
+                <th>Genre</th>
+                <th>Customer Name</th>
+                <th>Customer Email</th>
+                <th>Feedbaack Message</th>
+                <th>Entered Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var feedback in Model)
+            {
+                <tr>
+                    <td>@feedback.FeedbackId</td>
+                    <td>
+                        @if (feedback.Book.BookImage != null && feedback.Book.BookImage.Length > 0)
+                        {
+                            <img src="data:image/jpeg;base64,@Convert.ToBase64String(feedback.Book.BookImage)"
+                                 alt="Book Image"
+                                 style="width: 60px; height: auto; border-radius: 5px;" />
+                        }
+                        else
+                        {
+                            <span style="font-style: italic; color: #999;">No Image</span>
+                        }
+                    </td>
+                    <td>@feedback.Book.Title</td>
+                    <td>@feedback.Book.Genre.Name</td>
+                    <td>@feedback.User.Name</td>
+                    <td>@feedback.User.Email</td>
+                    <td>@feedback.Message</td>
+                    <td>@feedback.EnteredDate.ToString("dd/MM/yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#tableCss').DataTable({
+                paging: true,
+                searching: true,
+                ordering: true,
+                info: true
+            });
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                        Swal.fire({
+                            icon: 'success',
+                        title: 'Success!',
+                        text: '@TempData["SuccessMessage"]',
+                        confirmButtonText: 'OK'
+                                });
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                        Swal.fire({
+                            icon: 'error',
+                        title: 'Error!',
+                        text: '@TempData["ErrorMessage"]',
+                        confirmButtonText: 'OK'
+                                });
+            </text>
+        }
+                });
+    </script>
+}

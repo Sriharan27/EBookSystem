@@ -1,0 +1,88 @@
+﻿@model Users
+@{
+    ViewData["Title"] = "Sign Up";
+}
+<head>
+    <link rel="stylesheet" href="~/css/LoginSignUpPages.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="container-fluid  h-100">
+        <div class="row justify-content-center">
+            <div class="col-md-6 p-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="title-2 mb-4">Sign Up</h2>
+                        <hr />
+                        <form method="post" asp-action="SignUpPage">
+                            <div class="mb-3">
+                                <label asp-for="Name" class="form-label">Name</label>
+                                <input asp-for="Name" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="Email" class="form-label">Email</label>
+                                <input asp-for="Email" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">+94</span>
+                                    <input asp-for="PhoneNumber" class="form-control" required id="phoneNumber" maxlength="9" placeholder="Enter phone number">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="Address" class="form-label">Address</label>
+                                <input asp-for="Address" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Password</label>
+                                <input name="password" type="password" class="form-control" required>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">Sign Up</button>
+                                <button type="button" class="btn btn-danger" onclick="history.back()">Cancel</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" style="display: flex; justify-content: center; align-items: center;">
+                <img src="~/images/SignUp.png" alt="Company Logo" style="width: 100%;">
+
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('phoneNumber').addEventListener('input', function (e) {
+            if (this.value.length > 9) {
+                this.value = this.value.slice(0, 9);
+            }
+        });
+        $(document).ready(function () {
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <text>
+                            Swal.fire({
+                                icon: 'success',
+                            title: 'Success!',
+                            text: '@TempData["SuccessMessage"]',
+                            confirmButtonText: 'OK'
+                              }).then(() => {
+                                window.location.href = '/Home/LoginPage';
+                             });
+                </text>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <text>
+                            Swal.fire({
+                                icon: 'error',
+                            title: 'Error!',
+                            text: '@TempData["ErrorMessage"]',
+                            confirmButtonText: 'OK'
+                                });
+                </text>
+            }
+        });
+    </script>
+</body>

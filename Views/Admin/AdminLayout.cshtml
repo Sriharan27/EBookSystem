@@ -1,0 +1,97 @@
+﻿@{
+    var username = Context.Session.GetString("Username") ?? "Guest";
+    var usertype = Context.Session.GetString("UserType") ?? "Guest";
+}
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Admin</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css">
+    <link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/adminStyle.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.3/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.11/jquery.validate.unobtrusive.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.28/dist/sweetalert2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.28/dist/sweetalert2.min.js"></script>
+</head>
+<body>
+    <div class="wrapper d-flex align-items-stretch">
+        <nav id="sidebar">
+            <div class="custom-menu">
+                <button type="button" id="sidebarCollapse" class="btn btn-primary">
+                </button>
+            </div>
+            <div class="img bg-wrap text-center py-4" style="background-image:url('/images/tortoise-shell.svg');">
+                <div class="user-logo">
+                    <div class="img" style="background-image: url('/images/logo.jpg');"></div>
+                    <h3>@username </h3>
+                    <h6>@usertype</h6>
+                </div>
+            </div>
+            <ul class="list-unstyled components mb-5">
+                <li class="active">
+                    <a asp-controller="Admin" asp-action="DashBoard">
+                        <span class="bi bi-speedometer2 mr-3"></span> Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Admin" asp-action="ManageUsers">
+                        <span class="bi bi-person-circle mr-3"></span> Manage Users
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Admin" asp-action="ManageGenres">
+                        <span class="bi bi-collection-fill mr-3"></span> Manage Genres
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Admin" asp-action="ManageBooks">
+                        <span class="bi bi-book-fill mr-3"></span> Manage Books
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Admin" asp-action="ManageOrders">
+                        <span class="bi bi-bag-fill mr-3"></span> Manage Orders
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Admin" asp-action="OrderReport">
+                        <span class="bi bi-file-earmark-bar-graph-fill mr-3"></span> Order Report
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Admin" asp-action="FeedbackReport">
+                        <span class="bi bi-chat-square-text-fill mr-3"></span> Feedback Report
+                    </a>
+                </li>
+                <li>
+                    <a asp-controller="Admin" asp-action="Logout">
+                        <span class="bi bi-box-arrow-right mr-3"></span> Sign Out
+                    </a>
+                </li>
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5 pt-5" style="overflow-x:auto">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="~/js/main.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

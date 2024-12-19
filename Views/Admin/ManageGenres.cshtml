@@ -1,0 +1,76 @@
+﻿@model List<Genres>
+@{
+    Layout = "~/Views/Admin/AdminLayout.cshtml";
+}
+<h2 class="text-center mb-5">Manage Genres</h2>
+
+<div class="row mb-5">
+    <div class="col">
+        <a class="btn btn-primary" asp-controller="Admin" asp-action="AddGenre">Add New Genre</a>
+    </div>
+</div>
+
+<div class="table-responsive d-none d-md-block">
+    <table id="tableCss" class="table table-hover table-striped">
+        <thead>
+            <tr>
+                <th>Genre ID</th>
+                <th>Name</th>
+                <th>Entered Date</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var Genre in Model)
+            {
+                <tr>
+                    <td>@Genre.GenreId</td>
+                    <td>@Genre.Name</td>
+                    <td>@Genre.EnteredDate.ToString("dd/MM/yyyy")</td>
+                    <td style="white-space:nowrap">
+                        <a class="btn  btn-sm" asp-controller="Admin" asp-action="EditGenre" asp-route-id="@Genre.GenreId"><i class="bi bi-pencil-square"></i></a>
+                        <form method="post" asp-controller="Admin" asp-action="DeleteGenre" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this genre?');">
+                            <input type="hidden" name="genreId" value="@Genre.GenreId" />
+                            <button type="submit" class="btn  btn-sm"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#tableCss').DataTable({
+            paging: true,
+            searching: true,
+            ordering: true,
+            info: true
+        });
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <text>
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Success!',
+                                    text: '@TempData["SuccessMessage"]',
+                                    confirmButtonText: 'OK'
+                                 });
+            </text>
+        }
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <text>
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: '@TempData["ErrorMessage"]',
+                                    confirmButtonText: 'OK'
+                                 });
+            </text>
+        }
+    });
+</script>

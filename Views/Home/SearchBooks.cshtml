@@ -1,0 +1,54 @@
+﻿@model List<Books>
+@{
+    Layout = "~/Views/Home/HomeLayout.cshtml";
+    ViewData["Title"] = "Search Results";
+}
+<section class="book_section layout_padding">
+    <div class="book_container">
+        <div class="container">
+            <div class="heading_container heading_center">
+                <h2>Search Results</h2>
+                <p>Displaying books matching your query.</p>
+            </div>
+
+            <div class="row" id="search-results">
+                @if (Model.Any())
+                {
+                    foreach (var book in Model)
+                    {
+                        <div class="col-sm-6 col-md-4 d-flex justify-content-center mb-4">
+                            <div style="width: 18rem; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+                                <div style="padding: 16px; background-color: #f8f9fa;">
+                                    <a asp-controller="Store" asp-action="Details" asp-route-id="@book.BookId">
+                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(book.BookImage)"
+                                             alt="@book.Title"
+                                             style="width: 166px; height: 250px; object-fit: cover; display: block; margin: 0 auto; border-radius: 4px;">
+                                    </a>
+                                </div>
+                                <div style="padding: 16px;">
+                                    <h5 style="font-size: 18px; font-weight: bold; color: #333; margin-bottom: 8px;">
+                                        @book.Title
+                                    </h5>
+                                    <p style="font-size: 16px; color: #555; margin-bottom: 16px;">
+                                        Price: LKR @book.Price.ToString("N", new System.Globalization.CultureInfo("en-US"))
+                                    </p>
+                                    <a asp-controller="Home" asp-action="BookDetails" asp-route-id="@book.BookId"
+                                       class="btn btn-primary btn-block"
+                                       style="display: flex; justify-content: center; align-items: center; text-align: center;">
+                                        <i class="fa-solid fa-book-open mr-2"></i> View Book
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="col-12 text-center">
+                        <h4>No books match your search query. Please try a different keyword.</h4>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

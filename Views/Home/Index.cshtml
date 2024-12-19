@@ -1,0 +1,204 @@
+﻿@model List<Books>
+@{
+    Layout = "~/Views/Home/HomeLayout.cshtml";
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="hero_area">
+    <section class="slider_section">
+        <div id="customCarousel1" class="carousel slide" data-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="detail-box">
+                                    <h5>Welcome to EBook Bookstore</h5>
+                                    <h1>For All Your <br> Reading Needs</h1>
+                                    <p>
+                                        Explore a world of imagination, inspiration, and learning with our carefully curated collection of books for every age and interest.
+                                    </p>
+                                    <a href="">Browse Our Collection</a>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="img-box">
+                                    <img src="images/slider-img.png" alt="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<section class="book_section layout_padding">
+    <div class="book_container">
+        <div class="container">
+            <div class="heading_container heading_center">
+                <h2>Books Collection</h2>
+                <p>Explore our diverse collection of books across various genres and categories.</p>
+            </div>
+            <!-- Filter Section -->
+            <div class="flex-w flex-sb-m p-b-52" style="margin-top: 20px; margin-bottom: 20px;">
+                <div class="flex-w flex-l-m filter-tope-group m-tb-10" id="filter-buttons"
+                     style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; width: 100%; gap: 10px;">
+                    <!-- Genres will be dynamically loaded here -->
+                </div>
+            </div>
+
+            <div class="row" id="book-list">
+                @for (int i = 0; i < Math.Min(Model.Count, 6); i++)
+                {
+                    <div class="col-sm-6 col-md-4 d-flex justify-content-center mb-4">
+                        <div style="width: 18rem; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+                            <div style="padding: 16px; background-color: #f8f9fa;">
+                                <a asp-controller="Store" asp-action="Details" asp-route-id="@Model[i].BookId">
+                                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model[i].BookImage)"
+                                         alt="@Model[i].Title"
+                                         style="width: 166px; height: 250px; object-fit: cover; display: block; margin: 0 auto; border-radius: 4px;">
+                                </a>
+                            </div>
+                            <div style="padding: 16px;">
+                                <h5 style="font-size: 18px; font-weight: bold; color: #333; margin-bottom: 8px;">
+                                    @Model[i].Title
+                                </h5>
+                                <p style="font-size: 16px; color: #555; margin-bottom: 16px;">
+                                    Price: LKR @Model[i].Price.ToString("N", new System.Globalization.CultureInfo("en-US"))
+                                </p>
+                                <a asp-controller="Home" asp-action="BookDetails" asp-route-id="@Model[i].BookId"
+                                   class="btn btn-primary btn-block"
+                                   style="display: flex; justify-content: center; align-items: center; text-align: center;">
+                                    <i class="fa-solid fa-book-open mr-2"></i> View Book
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            @if (Model.Count > 6)
+            {
+                <div class="text-center" style="display: flex; justify-content: center; margin-top: 20px;">
+                    <button id="load-more" class="btn btn-secondary mt-4">Load More</button>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        let books = []; // Store fetched books globally
+        let currentIndex = 6; // Tracks the number of loaded books
+        let currentGenre = 'all'; // Tracks the selected genre
+
+        const bookList = document.getElementById('book-list');
+        const loadMoreButton = document.getElementById('load-more');
+
+        // Function to load books based on the genre and index
+        function loadBooks(genreId = 'all', reset = false) {
+            if (reset) {
+                books = []; // Reset book list
+                currentIndex = 0; // Reset index
+                bookList.innerHTML = ''; // Clear existing books
+            }
+
+            $.ajax({
+                url: '/api/home/books',
+                method: 'GET',
+                data: { genreId: genreId === 'all' ? null : genreId },
+                success: function (data) {
+                    if (reset) {
+                        books = data; // Store all books fetched for the genre
+                    }
+
+                    const booksToLoad = books.slice(currentIndex, currentIndex + 6);
+                    booksToLoad.forEach(book => {
+                        const bookHtml = `
+                                <div class="col-sm-6 col-md-4 d-flex justify-content-center mb-4">
+                                    <div style="width: 18rem; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);">
+                                        <div style="padding: 16px; background-color: #f8f9fa;">
+                                                <a href="/Home/BookDetails/${book.bookId}">
+                                                <img src="data:image/jpeg;base64,${book.bookImage}"
+                                                     alt="${book.title}"
+                                                     style="width: 166px; height: 250px; object-fit: cover; display: block; margin: 0 auto; border-radius: 4px;">
+                                            </a>
+                                        </div>
+                                        <div style="padding: 16px;">
+                                            <h5 style="font-size: 18px; font-weight: bold; color: #333; margin-bottom: 8px;">${book.title}</h5>
+                                            <p style="font-size: 16px; color: #555; margin-bottom: 16px;">Price: LKR ${book.price.toLocaleString('en-US')}</p>
+                                            <a href="/Home/BookDetails/${book.bookId}"
+                                               class="btn btn-primary btn-block">
+                                                   <i class="fa-solid fa-book-open mr-2"></i> View Book
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>`;
+                        bookList.insertAdjacentHTML('beforeend', bookHtml);
+                    });
+
+                    currentIndex += booksToLoad.length;
+
+                    // Hide Load More button if no more books to load
+                    if (currentIndex >= books.length) {
+                        loadMoreButton.style.display = 'none';
+                    } else {
+                        loadMoreButton.style.display = 'block';
+                    }
+                },
+                error: function () {
+                    console.error('Failed to load books');
+                }
+            });
+        }
+
+        // Load genres dynamically
+        function loadGenres() {
+            $.ajax({
+                url: '/api/home/genres',
+                method: 'GET',
+                success: function (data) {
+                    const filterButtons = document.getElementById('filter-buttons');
+                    filterButtons.innerHTML = ''; // Clear existing buttons
+                    filterButtons.insertAdjacentHTML('beforeend', '<button class="btn btn-outline-primary active" data-genre-id="all" style="margin-right: 10px;">All Genres</button>');
+
+                    data.forEach(genre => {
+                        const buttonHTML = `
+                                <button class="btn btn-outline-primary" data-genre-id="${genre.genreId}" style="margin-right: 10px;">
+                                    ${genre.genreName}
+                                </button>`;
+                        filterButtons.insertAdjacentHTML('beforeend', buttonHTML);
+                    });
+
+                    // Add event listeners to genre buttons
+                    document.querySelectorAll('#filter-buttons button').forEach(button => {
+                        button.addEventListener('click', function () {
+                            const genreId = this.getAttribute('data-genre-id');
+                            currentGenre = genreId; // Update current genre
+                            document.querySelectorAll('#filter-buttons button').forEach(btn => btn.classList.remove('active'));
+                            this.classList.add('active');
+                            loadBooks(genreId, true); // Reset and load books for the selected genre
+                        });
+                    });
+                },
+                error: function () {
+                    console.error('Failed to load genres');
+                }
+            });
+        }
+
+        // Event listener for Load More button
+        if (loadMoreButton) {
+            loadMoreButton.addEventListener('click', function () {
+                loadBooks(currentGenre); // Load more books for the current genre
+            });
+        }
+
+        // Initialize the page
+        loadGenres();
+        loadBooks('all', true); // Load all books by default
+    });
+</script>
+
